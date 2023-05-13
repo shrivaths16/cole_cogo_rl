@@ -300,6 +300,17 @@ if __name__ == "__main__":
                 writer.add_scalar("charts/SPS", int(global_step / (time.time() - start_time)), global_step)
                 if args.autotune:
                     writer.add_scalar("losses/alpha_loss", alpha_loss.item(), global_step)
-
+            
+            if global_step % 1000 == 0:
+                torch.save({
+                "actor_state_dict": actor.state_dict(),
+                "qf1_state_dict": qf1.state_dict(),
+                "qf2_state_dict": qf2.state_dict(),
+                "qf1_target_state_dict": qf1_target.state_dict(),
+                "qf2_target_state_dict": qf2_target.state_dict()
+                }, f"./wandb/{run_name}.pt")
+                art = wandb.Artifact("my-object-detector", type="model")
+                art.add_file(f"./wandb/{run_name}.pt")
+                wandb.log_artifact(art)
     envs.close()
     writer.close()

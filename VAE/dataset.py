@@ -7,7 +7,7 @@ from torchvision.datasets.folder import default_loader
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
-from torchvision.datasets import CelebA
+from torchvision.datasets import MNIST
 import zipfile
 
 
@@ -35,7 +35,16 @@ class MyCelebA(CelebA):
     def _check_integrity(self) -> bool:
         return True
     
+class My_MNIST(MNIST):
+    """
+    A work-around to address issues with pytorch's celebA dataset class.
     
+    Download and Extract
+    URL : https://drive.google.com/file/d/1m8-EBPgi5MRubrm6iQjafK2QMHDBMSfJ/view?usp=sharing
+    """
+    
+    def _check_integrity(self) -> bool:
+        return True    
 
 class OxfordPets(Dataset):
     """
@@ -136,7 +145,7 @@ class VAEDataset(LightningDataModule):
                                             transforms.Resize(self.patch_size),
                                             transforms.ToTensor(),])
         
-        self.train_dataset = MyCelebA(
+        self.train_dataset = My_MNIST(
             self.data_dir,
             split='train',
             transform=train_transforms,
@@ -144,7 +153,7 @@ class VAEDataset(LightningDataModule):
         )
         
         # Replace CelebA with your dataset
-        self.val_dataset = MyCelebA(
+        self.val_dataset = My_MNIST(
             self.data_dir,
             split='test',
             transform=val_transforms,

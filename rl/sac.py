@@ -7,9 +7,9 @@ from distutils.util import strtobool
 
 import gym
 import xArm
-#import d4rl
+import d4rl
 import numpy as np
-#import pybullet_envs  # noqa
+import pybullet_envs  # noqa
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -33,7 +33,7 @@ def parse_args():
         help="if toggled, this experiment will be tracked with Weights and Biases")
     parser.add_argument("--wandb-project-name", type=str, default="ece285_project",
         help="the wandb's project name")
-    parser.add_argument("--wandb-entity", type=str, default="crajagopalan",
+    parser.add_argument("--wandb-entity", type=str, default="dsmurali",
         help="the entity (team) of wandb's project")
     parser.add_argument("--capture-video", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
         help="whether to capture videos of the agent performances (check out `videos` folder)")

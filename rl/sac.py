@@ -6,6 +6,7 @@ import time
 from distutils.util import strtobool
 
 import gym
+import xArm
 import d4rl
 import numpy as np
 import pybullet_envs  # noqa
@@ -38,7 +39,7 @@ def parse_args():
         help="whether to capture videos of the agent performances (check out `videos` folder)")
 
     # Algorithm specific arguments
-    parser.add_argument("--env-id", type=str, default="Ant-v0",
+    parser.add_argument("--env-id", type=str, default="push",
         help="the id of the environment")
     parser.add_argument("--total-timesteps", type=int, default=1000000,
         help="total timesteps of the experiments")
@@ -70,21 +71,19 @@ def parse_args():
     # fmt: on
     return args
 
-
-def make_env(env_id, seed, idx, capture_video, run_name):
+def make_env(task):
+    """
+    Make DMControl environment for TD-MPC experiments.
+    Adapted from https://github.com/facebookresearch/drqv2
+    """
     def thunk():
-        env = gym.make(env_id)
-        env = gym.wrappers.RecordEpisodeStatistics(env)
-        if capture_video:
-            if idx == 0:
-                env = gym.wrappers.RecordVideo(env, f"videos/{run_name}")
-        env.seed(seed)
-        env.action_space.seed(seed)
-        env.observation_space.seed(seed)
-        return env
-
+        return xArm.make_env(task,
+                            42,
+                            50,
+                            image_size=84,
+                            observation_type="state")
+        
     return thunk
-
 
 # ALGO LOGIC: initialize agent here:
 class SoftQNetwork(nn.Module):
@@ -115,10 +114,10 @@ class Actor(nn.Module):
         self.fc_logstd = nn.Linear(256, np.prod(env.single_action_space.shape))
         # action rescaling
         self.register_buffer(
-            "action_scale", torch.tensor((env.action_space.high - env.action_space.low) / 2.0, dtype=torch.float32)
+            "action_scale", torch.tensor((env.action_space[0].high - env.action_space[0].low) / 2.0, dtype=torch.float32)
         )
         self.register_buffer(
-            "action_bias", torch.tensor((env.action_space.high + env.action_space.low) / 2.0, dtype=torch.float32)
+            "action_bias", torch.tensor((env.action_space[0].high + env.action_space[0].low) / 2.0, dtype=torch.float32)
         )
 
     def forward(self, x):
@@ -176,7 +175,7 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() and args.cuda else "cpu")
 
     # env setup
-    envs = gym.vector.SyncVectorEnv([make_env(args.env_id, args.seed, 0, args.capture_video, run_name)])
+    envs = gym.vector.SyncVectorEnv([make_env(args.env_id)])
     assert isinstance(envs.single_action_space, gym.spaces.Box), "only continuous action space is supported"
 
     max_action = float(envs.single_action_space.high[0])
@@ -230,12 +229,9 @@ if __name__ == "__main__":
                 writer.add_scalar("charts/episodic_return", info["episode"]["r"], global_step)
                 writer.add_scalar("charts/episodic_length", info["episode"]["l"], global_step)
                 break
-
+        
         # TRY NOT TO MODIFY: save data to reply buffer; handle `terminal_observation`
         real_next_obs = next_obs.copy()
-        for idx, d in enumerate(dones):
-            if d:
-                real_next_obs[idx] = infos[idx]["terminal_observation"]
         rb.add(obs, real_next_obs, actions, rewards, dones, infos)
 
         # TRY NOT TO MODIFY: CRUCIAL step easy to overlook

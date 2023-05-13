@@ -154,7 +154,7 @@ cython_debug/
 
 *logs*/
 *MNIST*/
-
+runs/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

@@ -1,0 +1,130 @@
+{
+    "os": "Linux-5.15.0-52-generic-x86_64-with-glibc2.31",
+    "python": "3.10.4",
+    "heartbeatAt": "2023-05-13T17:33:34.870633",
+    "startedAt": "2023-05-13T17:33:33.047009",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--capture-video",
+        "True",
+        "--track",
+        "True"
+    ],
+    "state": "running",
+    "program": "/home/chandramouli/Documents/cole_cogo_rl/rl/sac.py",
+    "codePath": "rl/sac.py",
+    "git": {
+        "remote": "git@github.com:shrivaths16/cole_cogo_rl.git",
+        "commit": "23d147dae72511a3a44897d0822bbf17a1b17246"
+    },
+    "email": "chanduiyer.raja@gmail.com",
+    "root": "/home/chandramouli/Documents/cole_cogo_rl",
+    "host": "chandramouli-Nitro-AN515-58",
+    "username": "chandramouli",
+    "executable": "/home/chandramouli/miniconda3/envs/real_robots/bin/python",
+    "cpu_count": 12,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 3.0595000000000008,
+        "min": 400.0,
+        "max": 3900.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2.452,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 1.326,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 4500.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 3300.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 3300.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 3300.0
+        },
+        {
+            "current": 1.524,
+            "min": 400.0,
+            "max": 3300.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 3300.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 3300.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 3300.0
+        },
+        {
+            "current": 3.1,
+            "min": 400.0,
+            "max": 3300.0
+        }
+    ],
+    "disk": {
+        "total": 467.8895797729492,
+        "used": 198.0230827331543
+    },
+    "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+            "memory_total": 4294967296
+        }
+    ],
+    "memory": {
+        "total": 15.341388702392578
+    }
+}

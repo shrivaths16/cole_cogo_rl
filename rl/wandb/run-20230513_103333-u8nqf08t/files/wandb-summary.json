@@ -1,1 +1,1 @@
-{}
+{"global_step": 33600, "_timestamp": 1683999449.72216, "losses/qf1_values": -56.183311462402344, "losses/qf2_values": -56.164512634277344, "losses/qf1_loss": 0.9352836012840271, "losses/qf2_loss": 0.9392680525779724, "losses/qf_loss": 0.9372758269309998, "losses/actor_loss": 56.064701080322266, "losses/alpha": 0.015720225870609283, "charts/SPS": 145.0, "losses/alpha_loss": -2.1914687156677246, "_runtime": 236.66106700897217, "_step": 286}

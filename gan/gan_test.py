@@ -227,7 +227,6 @@ trainer = L.Trainer(
     devices=1,
     max_epochs=5,
     logger = tensorboard,
-
 )
 trainer.fit(model, dm)
 

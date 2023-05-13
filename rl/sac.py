@@ -301,7 +301,7 @@ if __name__ == "__main__":
                 if args.autotune:
                     writer.add_scalar("losses/alpha_loss", alpha_loss.item(), global_step)
             
-            if global_step % 1000 == 0:
+            if global_step % 1000 == 0 and args.track:
                 torch.save({
                 "actor_state_dict": actor.state_dict(),
                 "qf1_state_dict": qf1.state_dict(),

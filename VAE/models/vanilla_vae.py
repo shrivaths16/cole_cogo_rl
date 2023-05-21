@@ -20,7 +20,7 @@ class VanillaVAE(BaseVAE):
         modules = []
         if hidden_dims is None:
             hidden_dims = [32, 64, 128, 256, 512]
-
+        num_channels = in_channels
         # Build Encoder
         for h_dim in hidden_dims:
             modules.append(
@@ -70,7 +70,7 @@ class VanillaVAE(BaseVAE):
                                                output_padding=1),
                             nn.BatchNorm2d(hidden_dims[-1]),
                             nn.LeakyReLU(),
-                            nn.Conv2d(hidden_dims[-1], out_channels= 3,
+                            nn.Conv2d(hidden_dims[-1], out_channels=num_channels,
                                       kernel_size= 3, padding= 1),
                             nn.Tanh())
 

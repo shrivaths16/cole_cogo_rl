@@ -1,6 +1,6 @@
 model_params:
   name: 'VanillaVAE'
-  in_channels: 3
+  in_channels: 1
   latent_dim: 128
 
 
@@ -20,8 +20,9 @@ exp_params:
   manual_seed: 1265
 
 trainer_params:
-  gpus: [1]
-  max_epochs: 100
+  devices: [0]
+  max_epochs: 20
+  accelerator: "gpu" 
 
 logging_params:
   save_dir: "logs/"

@@ -1,6 +1,6 @@
 import os
 
-import lightning as L
+import pytorch_lightning as L
 import numpy as np
 import torch
 import torch.nn as nn

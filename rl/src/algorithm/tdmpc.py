@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from copy import deepcopy
 import algorithm.helper as h
+import tqdm
 
 
 class TOLD(nn.Module):
@@ -61,6 +62,21 @@ class TDMPC():
 		self.aug = h.RandomShiftsAug(cfg)
 		self.model.eval()
 		self.model_target.eval()
+
+	def init_bc(self, buffer):
+		self.model.train()
+		for _ in tqdm(range(2 * self.cfg.demos * self.cfg.episode_length), "Pretraining policy"):
+			obs, _, action, _, state, _, _, _ = buffer.sample()
+			self.bc_optim.zero_grad(set_to_none=True)
+			a = self.model.pi(self.model.h(self.aug(obs), state))
+			h.mse(a, action[0], reduce=True).backward()
+			torch.nn.utils.clip_grad_norm_(
+				self.model.parameters(),
+				self.cfg.grad_clip_norm,
+				error_if_nonfinite=False,
+			)
+			self.bc_optim.step()
+		self.model.eval()
 
 	def state_dict(self):
 		"""Retrieve state dict of TOLD model, including slow-moving target network."""

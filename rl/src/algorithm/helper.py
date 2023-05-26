@@ -165,7 +165,9 @@ class Episode(object):
 		self.obs[0] = torch.tensor(init_obs, dtype=dtype, device=self.device)
 		self.action = torch.empty((cfg.episode_length, cfg.action_dim), dtype=torch.float32, device=self.device)
 		self.reward = torch.empty((cfg.episode_length,), dtype=torch.float32, device=self.device)
+		self.expected_return = torch.empty((cfg.episode_length,), dtype=torch.float32, device=self.device)
 		self.cumulative_reward = 0
+		self._discount = cfg.discount
 		self.done = False
 		self._idx = 0
 	
@@ -187,6 +189,13 @@ class Episode(object):
 		self.cumulative_reward += reward
 		self.done = done
 		self._idx += 1
+		if self.done:
+			discount = 1
+			idx = self._idx
+			while idx >= 0: 
+				self.expected_return[idx] = discount * self.reward[idx]
+				idx -= 1
+				discount *= self._discount
 
 
 class ReplayBuffer():
@@ -204,7 +213,11 @@ class ReplayBuffer():
 		self._last_obs = torch.empty((self.capacity//cfg.episode_length, *cfg.obs_shape), dtype=dtype, device=self.device)
 		self._action = torch.empty((self.capacity, cfg.action_dim), dtype=torch.float32, device=self.device)
 		self._reward = torch.empty((self.capacity,), dtype=torch.float32, device=self.device)
+		self._expected_return = torch.empty((self.capacity,), dtype=torch.float32, device=self.device)
 		self._priorities = torch.ones((self.capacity,), dtype=torch.float32, device=self.device)
+		self._discount = cfg.discount
+		self.quantile = torch.tensor([0.25, 0.75])
+  		
 		self._eps = 1e-6
 		self._full = False
 		self.idx = 0
@@ -218,6 +231,7 @@ class ReplayBuffer():
 		self._last_obs[self.idx//self.cfg.episode_length] = episode.obs[-1]
 		self._action[self.idx:self.idx+self.cfg.episode_length] = episode.action
 		self._reward[self.idx:self.idx+self.cfg.episode_length] = episode.reward
+		self._expected_return[self.idx:self.idx+self.cfg.episode_length] = episode.expected_return
 		if self._full:
 			max_priority = self._priorities.max().to(self.device).item()
 		else:
@@ -272,6 +286,11 @@ class ReplayBuffer():
 
 		return obs, next_obs, action, reward.unsqueeze(2), idxs, weights
 
+	def sample_gan(self):
+		q = torch.quantile(self._expected_return, self.quantile)
+		labels = torch.logical_and(self._expected_return > q[0], self._expected_return < q[1]).float()
+		obs = self._get_obs(self._obs, torch.nonzero(labels, as_tuple=True)[0])
+		return obs, labels
 
 def linear_schedule(schdl, step):
 	"""
